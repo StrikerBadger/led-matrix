@@ -22,6 +22,9 @@
 #define PANEL_WIDTH 128
 #define NUM_SCANLINES 2
 
+#define PRACTICAL_MAX_BRIGHTNESS 80.0
+#define ROW_TIME_BUDGET_MICROSECONDS 100
+
 void setup() {
   // Set the pins into their respective modes
   pinMode(PIN_R1, OUTPUT); pinMode(PIN_G1, OUTPUT); pinMode(PIN_B1, OUTPUT);

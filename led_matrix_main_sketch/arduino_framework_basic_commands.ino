@@ -27,7 +27,7 @@ void loadPixelsIntoRow(int pixelsUpper[], int pixelsLower[]) {
   int numPixelsLower = sizeof(pixelsLower)/(3*sizeof(pixelsLower[0]));
 
   // Tests to warn about unexpected panel behaviour
-  if (numPixelsUpper > PANELWIDTH) {
+  if (numPixelsUpper > PANEL_WIDTH) {
     printf("Warning: Pixel-Array passed is bigger than the row itself. Pixel-Array: %s\n", pixelsUpper);
   }
   if (numPixelsUpper != numPixelsLower) {
@@ -49,3 +49,28 @@ void loadPixelsIntoRow(int pixelsUpper[], int pixelsLower[]) {
 }
 // Postcondition: Pixels are loaded, CLK is off (LOW)
 
+// Precondition: OE is off (HIGH), LAT is disenganged(LOW)
+void showRows(int rowOffset, double relativeBrightness) {
+  // Set row-address bits
+  digitalWrite(PIN_A, rowOffset & 0x01);
+  digitalWrite(PIN_B, rowOffset & (0x01 << 1));
+  digitalWrite(PIN_C, rowOffset & (0x01 << 2));
+  digitalWrite(PIN_D, rowOffset & (0x01 << 3));
+  digitalWrite(PIN_E, rowOffset & (0x01 << 4));
+  // Check and warn if relativeBrightness is too large
+  if (relativeBrightness > 100.0) {
+    printf("Relative Brightness was too large (%d). Setting to 100.", relativeBrightness);
+    relativeBrightness = 100.0;
+  }
+  unsigned int showtime = (unsigned int) (relativeBrightness*PRACTICAL_MAX_BRIGHTNESS*ROW_TIME_BUDGET_MICROSECONDS);
+  unsigned int offtime = (unsigned int) (ROW_TIME_BUDGET_MICROSECONDS - showtime);
+  // Set the latch and then show the row for the amount of relative brightness defined
+  digitalWrite(PIN_LAT, HIGH);
+  digitalWrite(PIN_LAT, LOW);
+
+  digitalWrite(PIN_OE, LOW);
+  delayMicroseconds(showtime);
+  digitalWrite(PIN_OE, HIGH);
+  delayMicroseconds(offtime);
+}
+// Postcondition: OE is off (HIGH), LAT is disengaged(LOW)
