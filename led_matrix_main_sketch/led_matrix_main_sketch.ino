@@ -50,6 +50,6 @@ void setup() {
 void loop() {
   // Show all the white pixels at 50% brightness
   for (int y = 0; y < numAddressableRows; y++) {
-    showRows(y, 0.5);
+    showRows(y, 0.05);
   }
 }
