@@ -25,6 +25,9 @@
 #define PRACTICAL_MAX_BRIGHTNESS 80.0
 #define ROW_TIME_BUDGET_MICROSECONDS 100
 
+unsigned int numAddressableRows = PANEL_HEIGHT/NUM_SCANLINES;
+int* allWhite = new int[3*PANEL_WIDTH];
+
 void setup() {
   // Set the pins into their respective modes
   pinMode(PIN_R1, OUTPUT); pinMode(PIN_G1, OUTPUT); pinMode(PIN_B1, OUTPUT);
@@ -34,9 +37,19 @@ void setup() {
   pinMode(PIN_A, OUTPUT); pinMode(PIN_B, OUTPUT); 
   pinMode(PIN_C, OUTPUT); pinMode(PIN_D, OUTPUT);
   pinMode(PIN_E, OUTPUT);
+
+  createInitialState();
+
+  for (int i = 0; i < 3*PANEL_WIDTH; i++) {
+    allWhite[i] = 1;
+  }
+
+  loadPixelsIntoRow(allWhite, allWhite);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  // Show all the white pixels at 50% brightness
+  for (int y = 0; y < numAddressableRows; y++) {
+    showRows(y, 50.0);
+  }
 }
