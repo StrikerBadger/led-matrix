@@ -22,7 +22,7 @@
 #define PANEL_WIDTH 128
 #define NUM_SCANLINES 2
 
-#define PRACTICAL_MAX_BRIGHTNESS 80.0
+#define PRACTICAL_MAX_BRIGHTNESS 0.8
 #define ROW_TIME_BUDGET_MICROSECONDS 100
 
 unsigned int numAddressableRows = PANEL_HEIGHT/NUM_SCANLINES;
@@ -44,12 +44,12 @@ void setup() {
     allWhite[i] = 1;
   }
 
-  loadPixelsIntoRow(allWhite, allWhite);
+  loadPixelsIntoRow(allWhite, allWhite, PANEL_WIDTH);
 }
 
 void loop() {
   // Show all the white pixels at 50% brightness
   for (int y = 0; y < numAddressableRows; y++) {
-    showRows(y, 50.0);
+    showRows(y, 0.5);
   }
 }

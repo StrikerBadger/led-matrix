@@ -1,4 +1,3 @@
-#include <math.h>
 
 void createInitialState() {
   // Make sure the output is off (the board is off is OE pin is high)
@@ -22,19 +21,14 @@ void createInitialState() {
 
 // Loads pixel array into the row(s)
 // Precondition: CLK is off (LOW)
-void loadPixelsIntoRow(int pixelsUpper[], int pixelsLower[]) {
-  int numPixelsUpper = sizeof(pixelsUpper)/(3*sizeof(pixelsUpper[0]));
-  int numPixelsLower = sizeof(pixelsLower)/(3*sizeof(pixelsLower[0]));
+void loadPixelsIntoRow(int pixelsUpper[], int pixelsLower[], unsigned int numPixelsToLoad) {
 
   // Tests to warn about unexpected panel behaviour
-  if (numPixelsUpper > PANEL_WIDTH) {
-    printf("Warning: Pixel-Array passed is bigger than the row itself. Pixel-Array: %s\n", pixelsUpper);
-  }
-  if (numPixelsUpper != numPixelsLower) {
-    printf("Warning: Pixel-Array sizes don't match. Pixel-Arrays: %s, %s\n", pixelsUpper, pixelsLower);
+  if (numPixelsToLoad > PANEL_WIDTH) {
+    printf("Warning: Trying to load more pixels than the row itself has. Trying to load: %d\n",numPixelsToLoad);
   }
 
-  for (int i = 0; i < max(numPixelsUpper, numPixelsLower); i++) {
+  for (int i = 0; i < numPixelsToLoad; i++) {
     // Set the pixel values
     digitalWrite(PIN_R1, pixelsUpper[i*3]);
     digitalWrite(PIN_G1, pixelsUpper[i*3+1]);
@@ -58,9 +52,9 @@ void showRows(int rowOffset, double relativeBrightness) {
   digitalWrite(PIN_D, rowOffset & (0x01 << 3));
   digitalWrite(PIN_E, rowOffset & (0x01 << 4));
   // Check and warn if relativeBrightness is too large
-  if (relativeBrightness > 100.0) {
-    printf("Relative Brightness was too large (%d). Setting to 100.", relativeBrightness);
-    relativeBrightness = 100.0;
+  if (relativeBrightness > 1.0) {
+    // printf("Relative Brightness was too large (%d). Setting to 100.", relativeBrightness);
+    relativeBrightness = 1.0;
   }
   unsigned int showtime = (unsigned int) (relativeBrightness*PRACTICAL_MAX_BRIGHTNESS*ROW_TIME_BUDGET_MICROSECONDS);
   unsigned int offtime = (unsigned int) (ROW_TIME_BUDGET_MICROSECONDS - showtime);
